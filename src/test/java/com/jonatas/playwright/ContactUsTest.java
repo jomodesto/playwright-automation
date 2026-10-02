@@ -1,39 +1,19 @@
 package com.jonatas.playwright;
 
+import com.jonatas.playwright.base.BaseTest;
 import com.jonatas.playwright.config.TestConfig;
 import com.jonatas.playwright.pages.ContactUsPage;
-import com.microsoft.playwright.Browser;
-import com.microsoft.playwright.BrowserType;
 import com.microsoft.playwright.Page;
-import com.microsoft.playwright.Playwright;
 import com.microsoft.playwright.options.AriaRole;
 import com.microsoft.playwright.options.LoadState;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+
 import org.junit.jupiter.api.Test;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ContactUsTest {
-    private Playwright playwright;
-    private Browser browser;
-    private Page page;
+public class ContactUsTest extends BaseTest {
 
-    @BeforeEach
-    void setUp() {
-        playwright = Playwright.create();
-        browser = playwright.chromium().launch(
-                new BrowserType.LaunchOptions().setHeadless(false)
-        );
-        page = browser.newPage();
-    }
-
-    @AfterEach
-    void tearDown() {
-        browser.close();
-        playwright.close();
-    }
 
     @Test
     void shouldSubmitContactFormSuccessfully() {
