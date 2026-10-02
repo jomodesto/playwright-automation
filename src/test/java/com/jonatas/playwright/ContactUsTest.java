@@ -11,6 +11,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ContactUsTest {
@@ -81,5 +82,7 @@ public class ContactUsTest {
         contactUsPage.fillMessage("Não quero essa joça não, mas fazer o que?");
         contactUsPage.clickSubmit();
 
+        assertThat(contactPage.locator("body"))
+                .containsText("Error: Invalid email address");
     }
 }
