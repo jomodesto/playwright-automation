@@ -1,5 +1,6 @@
 package com.jonatas.playwright;
 
+import com.jonatas.playwright.config.TestConfig;
 import com.jonatas.playwright.pages.ContactUsPage;
 import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.BrowserType;
@@ -37,7 +38,7 @@ public class ContactUsTest {
     @Test
     void shouldSubmitContactFormSuccessfully() {
 
-        page.navigate("https://www.webdriveruniversity.com/");
+        page.navigate(TestConfig.BASE_URL);
 
         Page contactPage = page.waitForPopup(() -> {
             page.getByRole(
@@ -62,7 +63,7 @@ public class ContactUsTest {
 
     @Test
     void shouldNotSubmitContactFormWithInvalidEmail(){
-        page.navigate("https://www.webdriveruniversity.com/");
+        page.navigate(TestConfig.BASE_URL);
 
         Page contactPage = page.waitForPopup(() -> {
             page.getByRole(
