@@ -3,14 +3,13 @@ package com.jonatas.playwright;
 import com.jonatas.playwright.base.BaseTest;
 import com.jonatas.playwright.config.TestConfig;
 import com.jonatas.playwright.pages.ContactUsPage;
-import com.microsoft.playwright.Page;
-import com.microsoft.playwright.options.AriaRole;
-import com.microsoft.playwright.options.LoadState;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
-import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ContactUsTest extends BaseTest {
 
@@ -20,22 +19,16 @@ public class ContactUsTest extends BaseTest {
 
         page.navigate(TestConfig.BASE_URL);
 
-        Page contactPage = page.waitForPopup(() -> {
-            page.getByRole(
-                    AriaRole.LINK,
-                    new Page.GetByRoleOptions()
-                            .setName("CONTACT US Contact Us Form")
-            ).click();
-        });
+        ContactUsPage contactUsPage = new ContactUsPage(page);
 
-        contactPage.waitForLoadState(LoadState.DOMCONTENTLOADED);
+        contactUsPage = contactUsPage.openContactUs();
 
-        ContactUsPage contactUsPage = new ContactUsPage(contactPage);
-
-        contactUsPage.fillFirstName("João");
-        contactUsPage.fillLastName("Da Silva Mello");
-        contactUsPage.fillEmail("Oruansmello@gmail.com");
-        contactUsPage.fillMessage("Não quero essa joça não, mas fazer o que?");
+        contactUsPage.fillContactForm(
+                "João",
+                "Da Silva Mello",
+                "Oruansmello@gmail.com",
+                "Não quero essa joça não, mas fazer o que?"
+        );
         contactUsPage.clickSubmit();
 
         assertEquals("Thank You for your Message!", contactUsPage.getSuccessMessage());
@@ -45,25 +38,41 @@ public class ContactUsTest extends BaseTest {
     void shouldNotSubmitContactFormWithInvalidEmail(){
         page.navigate(TestConfig.BASE_URL);
 
-        Page contactPage = page.waitForPopup(() -> {
-            page.getByRole(
-                    AriaRole.LINK,
-                    new Page.GetByRoleOptions()
-                            .setName("CONTACT US Contact Us Form")
-            ).click();
-        });
+        ContactUsPage contactUsPage = new ContactUsPage(page);
 
-        contactPage.waitForLoadState(LoadState.DOMCONTENTLOADED);
+        contactUsPage = contactUsPage.openContactUs();
 
-        ContactUsPage contactUsPage = new ContactUsPage(contactPage);
-
-        contactUsPage.fillFirstName("João");
-        contactUsPage.fillLastName("Da Silva Mello");
-        contactUsPage.fillEmail("email_invalido");
-        contactUsPage.fillMessage("Não quero essa joça não, mas fazer o que?");
+        contactUsPage.fillContactForm(
+                "João",
+                "Da Silva Mello",
+                "email_invalido",
+                "Não quero essa joça não, mas fazer o que?"
+        );
         contactUsPage.clickSubmit();
 
-        assertThat(contactPage.locator("body"))
-                .containsText("Error: Invalid email address");
+        assertTrue(contactUsPage.hasInvalidEmailMessage());
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "firstNameEmpty",
+            "lastNameEmpty",
+            "emailEmpty",
+            "messageEmpty"
+    })
+    void shouldNotSubmitContactFormWithEmptyField(String field){
+        page.navigate(TestConfig.BASE_URL);
+
+        ContactUsPage contactUsPage = new ContactUsPage(page);
+
+        contactUsPage = contactUsPage.openContactUs();
+
+        contactUsPage.fillContactFormWithEmptyField(field);
+
+        contactUsPage.clickSubmit();
+
+        assertTrue(contactUsPage.hasRequiredFieldValidation());
+
+
     }
 }
