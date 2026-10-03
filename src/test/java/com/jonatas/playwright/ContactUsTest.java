@@ -17,11 +17,7 @@ public class ContactUsTest extends BaseTest {
     @Test
     void shouldSubmitContactFormSuccessfully() {
 
-        page.navigate(TestConfig.BASE_URL);
-
-        ContactUsPage contactUsPage = new ContactUsPage(page);
-
-        contactUsPage = contactUsPage.openContactUs();
+        ContactUsPage contactUsPage = openContactUsPage();
 
         contactUsPage.fillContactForm(
                 "João",
@@ -36,11 +32,8 @@ public class ContactUsTest extends BaseTest {
 
     @Test
     void shouldNotSubmitContactFormWithInvalidEmail(){
-        page.navigate(TestConfig.BASE_URL);
 
-        ContactUsPage contactUsPage = new ContactUsPage(page);
-
-        contactUsPage = contactUsPage.openContactUs();
+        ContactUsPage contactUsPage = openContactUsPage();
 
         contactUsPage.fillContactForm(
                 "João",
@@ -61,11 +54,8 @@ public class ContactUsTest extends BaseTest {
             "messageEmpty"
     })
     void shouldNotSubmitContactFormWithEmptyField(String field){
-        page.navigate(TestConfig.BASE_URL);
 
-        ContactUsPage contactUsPage = new ContactUsPage(page);
-
-        contactUsPage = contactUsPage.openContactUs();
+        ContactUsPage contactUsPage = openContactUsPage();
 
         contactUsPage.fillContactFormWithEmptyField(field);
 
@@ -73,6 +63,13 @@ public class ContactUsTest extends BaseTest {
 
         assertTrue(contactUsPage.hasRequiredFieldValidation());
 
+    }
 
+    private ContactUsPage openContactUsPage() {
+        page.navigate(TestConfig.BASE_URL);
+
+        ContactUsPage contactUsPage = new ContactUsPage(page);
+
+        return contactUsPage.openContactUs();
     }
 }
