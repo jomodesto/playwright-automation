@@ -6,7 +6,7 @@ import com.jonatas.playwright.pages.ContactUsPage;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -31,7 +31,7 @@ public class ContactUsTest extends BaseTest {
     }
 
     @Test
-    void shouldNotSubmitContactFormWithInvalidEmail(){
+    void shouldNotSubmitContactFormWithInvalidEmail() {
 
         ContactUsPage contactUsPage = openContactUsPage();
 
@@ -46,14 +46,15 @@ public class ContactUsTest extends BaseTest {
         assertTrue(contactUsPage.hasInvalidEmailMessage());
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {
-            "firstNameEmpty",
-            "lastNameEmpty",
-            "emailEmpty",
-            "messageEmpty"
+    @ParameterizedTest(name = "{0}")
+    @CsvSource({
+            "Send form without fill first name, firstNameEmpty",
+            "Send form without fill last name, lastNameEmpty",
+            "Send form without fill email, emailEmpty",
+            "Send form without fill message, messageEmpty"
     })
-    void shouldNotSubmitContactFormWithEmptyField(String field){
+    void shouldNotSubmitContactFormWithEmptyField(String scenario,
+                                                  String field) {
 
         ContactUsPage contactUsPage = openContactUsPage();
 
